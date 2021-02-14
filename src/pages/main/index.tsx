@@ -7,9 +7,9 @@ import {
   ContainerEventType,
   ContainerPropsType,
   ContainerStateType,
+  PhoneOptionType,
 } from './data';
 
-import { mockDevices } from './mockData';
 import { IPCSignals } from '../../utils/constants';
 
 type PropsType = ContainerPropsType;
@@ -23,10 +23,11 @@ class Main extends React.PureComponent<PropsType, StateType> {
     super(props);
 
     this.state = {
-      deviceOpts: mockDevices,
+      deviceOpts: [],
       devices: [],
       phoneList: [],
       message: '',
+      working: false,
     };
 
     this.event = {
@@ -42,13 +43,45 @@ class Main extends React.PureComponent<PropsType, StateType> {
     ipcRenderer.on(
       IPCSignals.RENDER_MSG_RECEIVER_REFRESH,
       (event: IpcRendererEvent, result: any) => {
-        console.log(result);
+        // console.log(result);
+        const { deviceOpts } = result;
+        this.setState({
+          deviceOpts,
+        });
       }
     );
     ipcRenderer.on(
       IPCSignals.RENDER_MSG_RECEIVER_SEND_RESULT,
       (event: IpcRendererEvent, result: any) => {
-        console.log(result);
+        // console.log(result);
+        const { phone, status, leftErr, finish } = result;
+        if (leftErr) {
+          this.setState({
+            working: false,
+            phoneList: produce(this.state.phoneList, (draftState) => {
+              const tarIdx = draftState.findIndex(
+                (obj: PhoneOptionType) => obj.id === phone
+              );
+              if (tarIdx > -1) {
+                for (let i = tarIdx; i < draftState.length; i++) {
+                  draftState[i].status = 2;
+                }
+              }
+            }),
+          });
+          return;
+        }
+        this.setState({
+          working: !finish,
+          phoneList: produce(this.state.phoneList, (draftState) => {
+            const tarObj = draftState.find(
+              (obj: PhoneOptionType) => obj.phone === phone
+            );
+            if (tarObj) {
+              tarObj.status = status ? 1 : 0;
+            }
+          }),
+        });
       }
     );
   }
@@ -63,11 +96,9 @@ class Main extends React.PureComponent<PropsType, StateType> {
     ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_REFRESH);
   };
 
-  _handleOnPhoneChange = (phoneList: string[]) => {
+  _handleOnPhoneChange = (phoneList: Array<PhoneOptionType>) => {
     this.setState({
-      phoneList: produce(this.state.phoneList, (draftState) => {
-        return draftState.concat(phoneList);
-      }),
+      phoneList,
     });
   };
 
@@ -79,7 +110,15 @@ class Main extends React.PureComponent<PropsType, StateType> {
 
   _handleOnMessageSend = () => {
     const { phoneList, message, devices } = this.state;
-    console.log({ phoneList, message, devices });
+    // console.log({ phoneList, message, devices });
+    ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_SEND_MESSAGE, {
+      phones: phoneList.map((obj: PhoneOptionType) => obj.phone),
+      message,
+      devices,
+    });
+    this.setState({
+      working: true,
+    });
   };
 
   render() {

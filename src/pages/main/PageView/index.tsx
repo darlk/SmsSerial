@@ -18,6 +18,7 @@ const PageView: React.FC<PropsType> = ({
   devices,
   phoneList,
   deviceOpts,
+  working,
   onDevicesRefresh,
   onDevicesChange,
   onPhoneChange,
@@ -31,17 +32,20 @@ const PageView: React.FC<PropsType> = ({
           className={styles.phoneList}
           value={phoneList}
           onChange={onPhoneChange}
+          working={working}
         />
         <Message
           className={styles.message}
           onChange={onMessageChange}
           onSend={onMessageSend}
+          working={working}
         />
       </div>
       <div className={styles.right}>
         <Devices
           className={styles.devices}
           value={devices}
+          working={working}
           options={deviceOpts}
           onRefresh={onDevicesRefresh}
           onChange={onDevicesChange}

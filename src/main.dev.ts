@@ -75,8 +75,11 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
+  mainWindow.setResizable(false);
+  mainWindow.setMaximizable(false);
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
@@ -110,7 +113,7 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
-  new SerialReceiver(ipcMain)
+  new SerialReceiver()
 };
 
 /**
