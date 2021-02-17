@@ -8,7 +8,7 @@ type PropsType = {
 };
 
 const Infos: React.FC<PropsType> = ({ className }) => {
-  return <div className={classnames(styles.main, className)}>infos</div>;
+  return <div className={classnames(styles.main, className)}></div>;
 };
 
 export default Infos;

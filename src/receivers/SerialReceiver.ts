@@ -27,6 +27,7 @@ class SerialReceiver {
     this.modems = {};
     this.tryCount = 0;
     let deviceOpts = [];
+
     for await (const port of ports) {
       if (port.vendorId === '1a86') {
         try {
@@ -38,7 +39,9 @@ class SerialReceiver {
             label: port.path.substring(port.path.lastIndexOf('/') + 1),
           });
         } catch (error) {
-          console.log(error);
+          event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_ERROR_MSG, {
+            error,
+          });
         }
       }
     }

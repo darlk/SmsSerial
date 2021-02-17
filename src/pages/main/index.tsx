@@ -41,9 +41,15 @@ class Main extends React.PureComponent<PropsType, StateType> {
 
   componentDidMount() {
     ipcRenderer.on(
+      IPCSignals.RENDER_MSG_RECEIVER_ERROR_MSG,
+      (event: IpcRendererEvent, result: any) => {
+        console.log(result);
+      }
+    );
+    ipcRenderer.on(
       IPCSignals.RENDER_MSG_RECEIVER_REFRESH,
       (event: IpcRendererEvent, result: any) => {
-        // console.log(result);
+        console.log(result);
         const { deviceOpts } = result;
         this.setState({
           deviceOpts,

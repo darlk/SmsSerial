@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import SerialReceiver from './receivers/SerialReceiver';
 import log from 'electron-log';
@@ -60,6 +60,8 @@ const createWindow = async () => {
     await installExtensions();
   }
 
+  // app.allowRendererProcessReuse = false;
+
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'resources')
     : path.join(__dirname, '../resources');
@@ -96,6 +98,7 @@ const createWindow = async () => {
       mainWindow.focus();
     }
   });
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -113,7 +116,7 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
-  new SerialReceiver()
+  new SerialReceiver();
 };
 
 /**
