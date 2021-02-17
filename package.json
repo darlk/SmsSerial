@@ -33,8 +33,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "短信发送器",
+    "appId": "org.fama.smssender",
     "files": [
       "dist/",
       "node_modules/",

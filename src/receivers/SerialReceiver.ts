@@ -5,6 +5,8 @@ import PDU from 'node-sms-pdu';
 
 import { initModem, delay } from '../utils/utils';
 
+const venderList = ['1a86', '2c7c'];
+
 class SerialReceiver {
   modems: any = {};
   tryCount: number = 0;
@@ -29,7 +31,8 @@ class SerialReceiver {
     let deviceOpts = [];
 
     for await (const port of ports) {
-      if (port.vendorId === '1a86') {
+      const venderId = port.vendorId?.toLocaleLowerCase() || '';
+      if (venderId && venderList.includes(venderId)) {
         try {
           const modemObj: any = await initModem(port.path);
           this.modems[port.path] = modemObj;
@@ -82,7 +85,7 @@ class SerialReceiver {
       let ok = true;
       for (const pdu of pduList) {
         const msgResult = await modem.sms_send_pdu(pdu);
-        ok = msgResult === 'OK' && ok;
+        ok = msgResult.includes('OK') && ok;
         // console.log({ msgResult, ok });
       }
 
