@@ -117,14 +117,22 @@ class Main extends React.PureComponent<PropsType, StateType> {
   _handleOnMessageSend = () => {
     const { phoneList, message, devices } = this.state;
     // console.log({ phoneList, message, devices });
-    ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_SEND_MESSAGE, {
-      phones: phoneList.map((obj: PhoneOptionType) => obj.phone),
-      message,
-      devices,
-    });
-    this.setState({
-      working: true,
-    });
+
+    this.setState(
+      {
+        working: true,
+        phoneList: produce(this.state.phoneList, (draftState) => {
+          draftState.forEach((obj: PhoneOptionType) => (obj.status = 0));
+        }),
+      },
+      () => {
+        ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_SEND_MESSAGE, {
+          phones: phoneList.map((obj: PhoneOptionType) => obj.phone),
+          message,
+          devices,
+        });
+      }
+    );
   };
 
   render() {

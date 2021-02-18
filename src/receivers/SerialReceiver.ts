@@ -87,6 +87,10 @@ class SerialReceiver {
         const msgResult = await modem.sms_send_pdu(pdu);
         ok = msgResult.includes('OK') && ok;
         // console.log({ msgResult, ok });
+        event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_ERROR_MSG, {
+          msgResult,
+          pdu,
+        });
       }
 
       event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_SEND_RESULT, {
