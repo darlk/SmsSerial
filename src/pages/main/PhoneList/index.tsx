@@ -129,7 +129,7 @@ const PhoneList: React.FC<PropsType> = ({
         dataSource={value}
         columns={columns}
         pagination={false}
-        scroll={{ y: 360, x: '100%' }}
+        scroll={{ y: 280, x: '100%' }}
       />
     </PageHeader>
   );

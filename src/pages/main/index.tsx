@@ -2,6 +2,7 @@ import React from 'react';
 import PageView from './PageView';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import produce from 'immer';
+import { message as antMessage } from 'antd';
 
 import {
   ContainerEventType,
@@ -117,6 +118,18 @@ class Main extends React.PureComponent<PropsType, StateType> {
   _handleOnMessageSend = () => {
     const { phoneList, message, devices } = this.state;
     // console.log({ phoneList, message, devices });
+    if (!phoneList.length) {
+      antMessage.error('手机列表为空');
+      return;
+    }
+    if (!message) {
+      antMessage.error('短信内容为空');
+      return;
+    }
+    if (!devices.length) {
+      antMessage.error('设备列表为空');
+      return;
+    }
 
     this.setState(
       {
