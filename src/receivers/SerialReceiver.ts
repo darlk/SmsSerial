@@ -1,9 +1,10 @@
-import { ipcMain, ipcRenderer } from 'electron';
+import { ipcMain } from 'electron';
 import { IPCSignals } from '../utils/constants';
-import SerialPort from 'serialport';
-import PDU from 'node-sms-pdu';
+import SerialPortGSM from '../utils/serialport-gsm';
+// import SerialPort from 'serialport';
+// import PDU from 'node-sms-pdu';
 
-import { initModem, delay } from '../utils/utils';
+import { initModem, sandMsg, delay } from '../utils/utils';
 
 const venderList = ['1a86', '2c7c', '04e2'];
 
@@ -42,10 +43,10 @@ class SerialReceiver {
     }
 
     //
-    const ports = await SerialPort.list();
+    const ports: any = await SerialPortGSM.list();
     this.modems = {};
     this.tryCount = 0;
-    let deviceOpts = [];
+    const deviceOpts = [];
 
     this._log(event, { ports });
 
@@ -53,44 +54,22 @@ class SerialReceiver {
       const venderId = port.vendorId?.toLocaleLowerCase() || '';
       if (venderId && venderList.includes(venderId)) {
         try {
-          let modemObj: any = await initModem(port.path);
-          const ccidTest: any = await modemObj.exec('CCID');
-          if (ccidTest.includes('ERROR')) {
-            this._log(event, { ccidTest });
-            continue;
+          const modemObj: any = await initModem(port.path);
+          if (modemObj) {
+            this.modems[port.path] = modemObj;
+            this.tryCount++;
+            deviceOpts.push({
+              value: port.path,
+              label: port.path.substring(port.path.lastIndexOf('/') + 1),
+            });
           }
-          const cregTest: any = await modemObj.test('CREG');
-          if (!cregTest.includes('OK')) {
-            this._log(event, { cregTest });
-            continue;
-          }
-
-          // const singleTest: any = await modemObj.test('CSQ');
-          // if (
-          //   singleTest.includes('ERROR') ||
-          //   singleTest.split(' ')[1].split(',')[1] !== '1'
-          // ) {
-          // this._log(event, { singleTest });
-          //   continue;
-          // }
-
-          this._log(event, {
-            ccidTest,
-            cregTest,
-            // singleTest,
-          });
-
-          this.modems[port.path] = modemObj;
-          this.tryCount++;
-          deviceOpts.push({
-            value: port.path,
-            label: port.path.substring(port.path.lastIndexOf('/') + 1),
-          });
         } catch (error) {
           this._log(event, { error });
         }
       }
     }
+
+    console.log(this.modems);
 
     event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_REFRESH, {
       deviceOpts,
@@ -114,10 +93,11 @@ class SerialReceiver {
       }
       return modem;
     };
-    let num = 0;
-    for await (const phone of phones) {
-      // const modem = getDevices(num);
-      const modem = this.modems[devices[num % devices.length]];
+    for (let num = 0; num < phones.length; num++) {
+      const phone = phones[num];
+      const tarPath = devices[num % devices.length];
+      this._log(event, { tarPath, phone });
+      const modem = this.modems[tarPath];
       if (!modem) {
         event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_SEND_RESULT, {
           phone,
@@ -125,22 +105,14 @@ class SerialReceiver {
         });
         return;
       }
-      await modem.sms_mode(0);
-      const pduList = PDU.generateSubmit(phone, message);
-      let ok = true;
-      for await (const pdu of pduList) {
-        const msgResult = await modem.sms_send_pdu(pdu);
-        ok = msgResult.includes('OK') && ok;
-        // console.log({ msgResult, ok });
-        this._log(event, { msgResult, pdu });
-      }
+      const result: any = await sandMsg(phone, message, modem);
+      this._log(event, result);
 
       event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_SEND_RESULT, {
         phone,
-        status: ok,
+        status: result.status === 'success' ? 1 : 2,
         finish: num === phones.length - 1,
       });
-      num++;
 
       await delay(3000);
     }
