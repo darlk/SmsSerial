@@ -1,13 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Button, Checkbox, PageHeader } from 'antd';
+import { Button, Checkbox, PageHeader, Spin } from 'antd';
 import styles from './index.less';
-import { EventType } from '@testing-library/react';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { PortOptionType } from '../data.d';
 
 type PropsType = {
   className: object;
+  loading: boolean;
   value: string[];
   working: boolean;
   options: Array<PortOptionType>;
@@ -17,6 +17,7 @@ type PropsType = {
 
 const Devices: React.FC<PropsType> = ({
   className,
+  loading,
   options,
   value = [],
   working,
@@ -52,27 +53,29 @@ const Devices: React.FC<PropsType> = ({
         </Button>,
       ]}
     >
-      {options.length ? (
-        <div className={styles.content}>
-          <Checkbox
-            disabled={working}
-            indeterminate={indeterminate}
-            checked={isAllChecked}
-            onChange={handleOnAllCheck}
-          >
-            全选
-          </Checkbox>
-          <Checkbox.Group
-            disabled={working}
-            className={styles.devices}
-            options={options}
-            value={value}
-            onChange={onChange}
-          />
-        </div>
-      ) : (
-        ''
-      )}
+      <Spin spinning={loading}>
+        {options.length ? (
+          <div className={styles.content}>
+            <Checkbox
+              disabled={working}
+              indeterminate={indeterminate}
+              checked={isAllChecked}
+              onChange={handleOnAllCheck}
+            >
+              全选
+            </Checkbox>
+            <Checkbox.Group
+              disabled={working}
+              className={styles.devices}
+              options={options}
+              value={value}
+              onChange={onChange}
+            />
+          </div>
+        ) : (
+          ''
+        )}
+      </Spin>
     </PageHeader>
   );
 };

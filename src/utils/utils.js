@@ -18,19 +18,6 @@ const options = {
 };
 
 export function initModem(path) {
-  // return new Promise((res, rej) => {
-  //   const modem = new Modem(path, {
-  //     retry: 1000,
-  //     baudRate: 115200,
-  //   });
-  //   modem.open((err) => {
-  //     if (err) {
-  //       rej(err);
-  //       return;
-  //     }
-  //     res(modem);
-  //   });
-  // });
   return new Promise((res, rej) => {
     const modem = SerialPortGSM.Modem();
     modem.open(path, options, (err, msg) => {
@@ -53,20 +40,8 @@ export function initModem(path) {
           }, 'PDU');
         },
         false,
-        1000
+        500
       );
-    });
-  });
-}
-
-export function sandMsg(phone, message, modem) {
-  return new Promise((res, rej) => {
-    modem.sendSMS(phone, message, false, (msg, err) => {
-      if (err) {
-        rej(err);
-        return;
-      }
-      res(msg);
     });
   });
 }

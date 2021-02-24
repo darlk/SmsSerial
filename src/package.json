@@ -16,6 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "serialport": "9.0.4",
-    "node-sms-pdu": "^0.3.0"
+    "node-pdu": "^1.0.15"
   }
 }

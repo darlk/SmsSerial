@@ -25,6 +25,7 @@ class Main extends React.PureComponent<PropsType, StateType> {
 
     this.state = {
       deviceOpts: [],
+      devicesLoading: false,
       devices: [],
       phoneList: [],
       message: '',
@@ -54,6 +55,7 @@ class Main extends React.PureComponent<PropsType, StateType> {
         const { deviceOpts } = result;
         this.setState({
           deviceOpts,
+          devicesLoading: false,
         });
       }
     );
@@ -100,7 +102,14 @@ class Main extends React.PureComponent<PropsType, StateType> {
   };
 
   _handleOnDevicesRefresh = () => {
-    ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_REFRESH);
+    this.setState(
+      {
+        devicesLoading: true,
+      },
+      () => {
+        ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_REFRESH);
+      }
+    );
   };
 
   _handleOnPhoneChange = (phoneList: Array<PhoneOptionType>) => {
@@ -117,7 +126,7 @@ class Main extends React.PureComponent<PropsType, StateType> {
 
   _handleOnMessageSend = () => {
     const { phoneList, message, devices } = this.state;
-    // console.log({ phoneList, message, devices });
+    console.log({ phoneList, message, devices });
     if (!phoneList.length) {
       antMessage.error('手机列表为空');
       return;
@@ -140,7 +149,7 @@ class Main extends React.PureComponent<PropsType, StateType> {
       },
       () => {
         ipcRenderer.send(IPCSignals.MAIN_MSG_RECEIVER_SEND_MESSAGE, {
-          phones: phoneList.map((obj: PhoneOptionType) => obj.phone),
+          phones: phoneList.map((obj: PhoneOptionType) => String(obj.phone)),
           message,
           devices,
         });

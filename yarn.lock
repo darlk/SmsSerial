@@ -8537,6 +8537,13 @@ node-notifier@^8.0.0:
     uuid "^8.3.0"
     which "^2.0.2"
 
+node-pdu@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.npmjs.org/node-pdu/-/node-pdu-1.0.15.tgz#418f2df6900bf5502ec7fde73faf91adeedf8518"
+  integrity sha512-e/J8WNV5A+/jMYaUBgM3VnPKBjy8HPs0rB3zgnF3lsE1ljd9P8FddtXItWBeawAM0Q6w/1ckrhnHi98hUhN28A==
+  dependencies:
+    sprintf "~0.1.5"
+
 node-pre-gyp@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz#db1f33215272f692cd38f03238e3e9b47c5dd054"
@@ -11371,6 +11378,11 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
+
+sprintf@~0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmjs.org/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
+  integrity sha1-j4PjmpMXwaUCy324BQ5Rxnn27c8=
 
 sshpk@^1.7.0:
   version "1.16.1"

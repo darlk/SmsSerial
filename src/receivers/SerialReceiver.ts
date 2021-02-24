@@ -1,10 +1,8 @@
 import { ipcMain } from 'electron';
 import { IPCSignals } from '../utils/constants';
 import SerialPortGSM from '../utils/serialport-gsm';
-// import SerialPort from 'serialport';
-// import PDU from 'node-sms-pdu';
 
-import { initModem, sandMsg, delay } from '../utils/utils';
+import { initModem, delay } from '../utils/utils';
 
 const venderList = ['1a86', '2c7c', '04e2'];
 
@@ -50,7 +48,7 @@ class SerialReceiver {
 
     this._log(event, { ports });
 
-    for await (const port of ports) {
+    for (const port of ports) {
       const venderId = port.vendorId?.toLocaleLowerCase() || '';
       if (venderId && venderList.includes(venderId)) {
         try {
@@ -105,7 +103,8 @@ class SerialReceiver {
         });
         return;
       }
-      const result: any = await sandMsg(phone, message, modem);
+      // await delay(500);
+      const result: any = await modem.sendSMS(phone, message);
       this._log(event, result);
 
       event.sender.send(IPCSignals.RENDER_MSG_RECEIVER_SEND_RESULT, {

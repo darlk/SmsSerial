@@ -2,6 +2,7 @@ export type ContainerPropsType = {};
 
 export type ContainerStateType = {
   devices: string[];
+  devicesLoading: boolean;
   phoneList: Array<PhoneOptionType>;
   deviceOpts: Array<PortOptionType>;
   message: string;

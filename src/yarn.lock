@@ -284,10 +284,12 @@ node-abi@^2.7.0:
   dependencies:
     semver "^5.4.1"
 
-node-sms-pdu@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/node-sms-pdu/-/node-sms-pdu-0.3.0.tgz#88255b65efabb18ab391b285f88232469e79b434"
-  integrity sha512-DJgQIyZ+Wba83s0AmGyWGpaMQ861Zxc9fCoSttfFZFuc7Bg8iAGB5z5y0TfOkQfeqwq38fAZ+vWyxKpnQf7UWA==
+node-pdu@1.0.15:
+  version "1.0.15"
+  resolved "https://registry.npmjs.org/node-pdu/-/node-pdu-1.0.15.tgz#418f2df6900bf5502ec7fde73faf91adeedf8518"
+  integrity sha512-e/J8WNV5A+/jMYaUBgM3VnPKBjy8HPs0rB3zgnF3lsE1ljd9P8FddtXItWBeawAM0Q6w/1ckrhnHi98hUhN28A==
+  dependencies:
+    sprintf "~0.1.5"
 
 noop-logger@^0.1.1:
   version "0.1.1"
@@ -441,6 +443,11 @@ simple-get@^3.0.3:
     decompress-response "^4.2.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
+
+sprintf@~0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmjs.org/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
+  integrity sha1-j4PjmpMXwaUCy324BQ5Rxnn27c8=
 
 string-width@^1.0.1:
   version "1.0.2"

@@ -275,6 +275,7 @@
     "history": "^5.0.0",
     "immer": "^8.0.1",
     "lodash": "^4.17.20",
+    "node-pdu": "^1.0.15",
     "node-sms-pdu": "^0.3.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

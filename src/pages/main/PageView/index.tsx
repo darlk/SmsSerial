@@ -16,6 +16,7 @@ type PropsType = ContainerEventType & ContainerPropsType & ContainerStateType;
 
 const PageView: React.FC<PropsType> = ({
   devices,
+  devicesLoading,
   phoneList,
   deviceOpts,
   working,
@@ -44,6 +45,7 @@ const PageView: React.FC<PropsType> = ({
       <div className={styles.right}>
         <Devices
           className={styles.devices}
+          loading={devicesLoading}
           value={devices}
           working={working}
           options={deviceOpts}
